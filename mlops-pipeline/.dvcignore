@@ -1,0 +1,13 @@
+# Ignore patterns (regexp)
+\.git
+\.dvc
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+*.log
+.DS_Store
+

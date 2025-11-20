@@ -1,0 +1,7 @@
+# Configuration MLflow (optionnel)
+# Backend store URI (par défaut: local file store)
+backend_store_uri: "sqlite:///mlflow.db"
+
+# Default artifact root
+default_artifact_root: "./mlruns"
+
