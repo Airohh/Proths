@@ -1,6 +1,6 @@
-# 📊 Métriques Prometheus Disponibles
+# Métriques Prometheus
 
-## 🎯 Métriques Exposées par l'API
+## Métriques Exposées
 
 L'API FastAPI expose plusieurs métriques Prometheus via l'endpoint `/metrics` :
 
@@ -157,7 +157,7 @@ rate(predictions_total[5m])
 
 ---
 
-## 📊 Vérifier les Métriques dans Prometheus
+## Vérification dans Prometheus
 
 1. **Ouvrir Prometheus** : http://localhost:9090
 
@@ -229,7 +229,7 @@ rate(predictions_total[5m])
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 - [ ] API lancée : `uvicorn src.inference.api:app --reload`
 - [ ] Endpoint `/metrics` accessible : http://localhost:8000/metrics
@@ -240,5 +240,4 @@ rate(predictions_total[5m])
 
 ---
 
-**Une fois toutes les métriques visibles, le monitoring est complet !** 🎉
 

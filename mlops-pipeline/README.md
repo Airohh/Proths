@@ -1,12 +1,8 @@
 # Pipeline MLOps - Classification de Documents
 
-Pipeline MLOps end-to-end pour classification de documents avec monitoring, auto-retrain et déploiement automatisé.
+Pipeline MLOps : Train → Deploy → Monitor → Retrain
 
-## 🎯 Objectif
-
-Démontrer la maîtrise de l'industrialisation de l'IA avec un pipeline complet : **Train → Deploy → Monitor → Retrain**
-
-## 📁 Structure du Projet
+## Structure du Projet
 
 ```
 mlops-pipeline/
@@ -28,7 +24,7 @@ mlops-pipeline/
 └── docs/                 # Documentation
 ```
 
-## 🛠️ Stack Technique
+## Stack Technique
 
 - **MLflow** : Tracking d'expériences, registry de modèles
 - **DVC** : Versioning des données
@@ -39,7 +35,7 @@ mlops-pipeline/
 - **Grafana** : Visualisation
 - **TimescaleDB** : Stockage métriques temporelles
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -120,13 +116,13 @@ python scripts/monitor_and_retrain.py --once
 python scripts/test_end_to_end.py
 ```
 
-## 📊 Métriques Trackées
+## Métriques Trackées
 
 - **Performance** : Accuracy, Precision, Recall, F1, Latence, Throughput
 - **Coûts** : Coût par prédiction, Infrastructure, Training
 - **Qualité** : Drift score, Data quality, Model performance over time
 
-## 📈 Roadmap
+## Roadmap
 
 - [x] Structure du projet
 - [x] Setup MLflow + DVC
@@ -139,24 +135,15 @@ python scripts/test_end_to_end.py
 - [x] Alertes Prometheus
 - [ ] A/B Testing avancé
 
-## 📝 Documentation
+## Documentation
 
-### Guides Principaux
-- **🚀 [QUICKSTART.md](QUICKSTART.md)** : Démarrage rapide en 5 minutes
-- **📚 [docs/EXPLICATION_COMPLETE.md](docs/EXPLICATION_COMPLETE.md)** : Explication détaillée de tout (821 lignes)
-- **📋 [CHANGELOG.md](CHANGELOG.md)** : Historique des changements et état du projet
+- [QUICKSTART.md](QUICKSTART.md) - Démarrage rapide
+- [docs/EXPLICATION_COMPLETE.md](docs/EXPLICATION_COMPLETE.md) - Documentation technique
+- [docs/AUTO_RETRAIN.md](docs/AUTO_RETRAIN.md) - Auto-retrain
+- [docs/MONITORING_SETUP.md](docs/MONITORING_SETUP.md) - Monitoring Prometheus + Grafana
+- [docs/troubleshooting/](docs/troubleshooting/) - Dépannage
 
-### Guides Techniques
-- **🔄 [docs/AUTO_RETRAIN.md](docs/AUTO_RETRAIN.md)** : Guide complet de l'auto-retrain
-- **📊 [docs/MONITORING_SETUP.md](docs/MONITORING_SETUP.md)** : Guide du monitoring (Prometheus + Grafana)
-- **🤖 [docs/QU_EST_CE_QUE_MLOPS.md](docs/QU_EST_CE_QUE_MLOPS.md)** : Concepts MLOps
-- **🛠️ [docs/TOUS_LES_OUTILS_MLOPS.md](docs/TOUS_LES_OUTILS_MLOPS.md)** : Guide des outils utilisés
-- **🚀 [docs/CONCEPTS_AVANCES_MLOPS.md](docs/CONCEPTS_AVANCES_MLOPS.md)** : Concepts avancés
-
-### Dépannage
-- **🔧 [docs/troubleshooting/](docs/troubleshooting/)** : Guides de résolution de problèmes
-
-## 🔗 Liens Utiles
+## Liens
 
 - [MLflow](https://mlflow.org/)
 - [DVC](https://dvc.org/)

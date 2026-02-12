@@ -1,19 +1,17 @@
-# 📁 Structure du Projet
-
-## Organisation des Fichiers
+# Structure du Projet
 
 ```
 mlops-pipeline/
-├── 📄 README.md                    # Vue d'ensemble du projet
-├── 📄 QUICKSTART.md                # Démarrage rapide en 5 minutes
-├── 📄 CHANGELOG.md                 # Historique des changements
-├── 📄 STRUCTURE.md                 # Ce fichier
+├── README.md                       # Vue d'ensemble
+├── QUICKSTART.md
+├── CHANGELOG.md
+├── STRUCTURE.md
 │
-├── ⚙️ config/                      # Configuration centralisée
+├── config/
 │   ├── config.yaml                 # Tous les paramètres
 │   └── __init__.py                 # Chargement de la config
 │
-├── 💻 src/                         # Code source principal
+├── src/
 │   ├── training/                   # Pipeline d'entraînement
 │   │   ├── train.py                # Script d'entraînement
 │   │   └── preprocessing.py        # Préparation des données
@@ -31,11 +29,11 @@ mlops-pipeline/
 │       ├── logger.py               # Logging structuré
 │       └── validators.py           # Validation des données
 │
-├── 🧪 tests/                       # Tests unitaires
+├── tests/
 │   ├── test_api.py
 │   └── test_preprocessing.py
 │
-├── 📜 scripts/                     # Scripts utilitaires
+├── scripts/
 │   ├── download_dataset.py         # Télécharger datasets
 │   ├── prepare_ag_news.py          # Préparer AG News
 │   ├── generate_sample_data.py     # Générer données de test
@@ -45,7 +43,7 @@ mlops-pipeline/
 │   ├── test_end_to_end.py          # Tests end-to-end
 │   └── start_services.ps1          # Script PowerShell (Windows)
 │
-├── 🐳 docker/                      # Configuration Docker
+├── docker/
 │   ├── Dockerfile                  # Image API
 │   ├── Dockerfile.mlflow           # Image MLflow
 │   ├── prometheus/
@@ -56,7 +54,7 @@ mlops-pipeline/
 │       │   └── mlops-dashboard.json # Dashboard pré-configuré
 │       └── provisioning/           # Provisioning automatique
 │
-├── 📚 docs/                        # Documentation
+├── docs/
 │   ├── EXPLICATION_COMPLETE.md     # Explication détaillée (821 lignes)
 │   ├── AUTO_RETRAIN.md             # Guide auto-retrain
 │   ├── MONITORING_SETUP.md         # Guide monitoring
@@ -71,18 +69,18 @@ mlops-pipeline/
 │       ├── installation-docker.md
 │       └── remplir-services.md
 │
-├── 📊 data/                        # Données
+├── data/
 │   ├── raw/                        # Données brutes
 │   └── processed/                  # Données préprocessées
 │
-├── 🤖 models/                      # Modèles sauvegardés
-├── 📦 mlruns/                      # MLflow runs (généré)
+├── models/
+├── mlruns/
 │
-├── 🐳 docker-compose.yml           # Services Docker
-├── 📋 requirements.txt             # Dépendances Python
-├── ⚙️ Makefile                     # Commandes utiles
-├── 📝 env.example                  # Template variables d'environnement
-└── 🔧 mlflow.yaml                  # Config MLflow (optionnel)
+├── docker-compose.yml
+├── requirements.txt
+├── Makefile
+├── env.example
+└── mlflow.yaml
 ```
 
 ## Fichiers Principaux
@@ -125,25 +123,25 @@ mlops-pipeline/
 
 Les fichiers suivants ont été supprimés car redondants :
 
-- ❌ RESUME_CHANGEMENTS.md → Fusionné dans CHANGELOG.md
-- ❌ RESUME_FINAL.md → Fusionné dans CHANGELOG.md
-- ❌ GUIDE_COMPLET.md → Remplacé par docs/EXPLICATION_COMPLETE.md
-- ❌ SETUP.md → Remplacé par QUICKSTART.md
-- ❌ DEMARRAGE_RAPIDE.md → Déplacé dans docs/troubleshooting/
-- ❌ GUIDE_DEMARRAGE.md → Déplacé dans docs/troubleshooting/
+- RESUME_CHANGEMENTS.md → Fusionné dans CHANGELOG.md
+- RESUME_FINAL.md → Fusionné dans CHANGELOG.md
+- GUIDE_COMPLET.md → Remplacé par docs/EXPLICATION_COMPLETE.md
+- SETUP.md → Remplacé par QUICKSTART.md
+- DEMARRAGE_RAPIDE.md → Déplacé dans docs/troubleshooting/
+- GUIDE_DEMARRAGE.md → Déplacé dans docs/troubleshooting/
 
 ## Fichiers Déplacés
 
-- ✅ DEMARRER_DOCKER.md → docs/troubleshooting/installation-docker.md
-- ✅ POPULER_SERVICES.md → docs/troubleshooting/remplir-services.md
-- ✅ PROBLEME_DOCKER.md → docs/troubleshooting/installation-docker.md
+- DEMARRER_DOCKER.md → docs/troubleshooting/installation-docker.md
+- POPULER_SERVICES.md → docs/troubleshooting/remplir-services.md
+- PROBLEME_DOCKER.md → docs/troubleshooting/installation-docker.md
 
 ## Structure Finale
 
 **Organisation claire et logique** :
 - 📄 Documentation principale à la racine
-- 📚 Documentation technique dans `docs/`
-- 🔧 Guides de dépannage dans `docs/troubleshooting/`
+- Documentation : `docs/`
+- Dépannage : `docs/troubleshooting/`
 - 💻 Code source dans `src/`
 - 🧪 Tests dans `tests/`
 - 📜 Scripts dans `scripts/`

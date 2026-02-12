@@ -1,4 +1,4 @@
-# 🚀 Démarrage des Services
+# Démarrage des Services
 
 ## Services Disponibles
 

@@ -1,10 +1,10 @@
-# 📊 Dashboard Grafana - Guide d'Accès
+# Dashboard Grafana - Guide d'Accès
 
-## 🎯 Problème
+## Problème
 
 Vous ne trouvez pas le dashboard dans Grafana.
 
-## ✅ Solution : Accéder au Dashboard
+## Solution : Accéder au Dashboard
 
 ### Méthode 1 : Via le Menu Dashboards (Recommandé)
 
@@ -84,7 +84,7 @@ Attendre 10-15 secondes, puis rafraîchir Grafana.
 
 ---
 
-## 📋 Contenu du Dashboard
+## Contenu du Dashboard
 
 Le dashboard **"MLOps Pipeline - Monitoring"** contient :
 
@@ -130,7 +130,7 @@ Le dashboard **"MLOps Pipeline - Monitoring"** contient :
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 - [ ] Grafana accessible : http://localhost:3000
 - [ ] Connecté avec admin/admin
@@ -141,7 +141,7 @@ Le dashboard **"MLOps Pipeline - Monitoring"** contient :
 
 ---
 
-## 🚀 Accès Rapide
+## Accès Rapide
 
 **URL directe** (si le dashboard existe) :
 ```
@@ -156,5 +156,4 @@ http://localhost:3000/d/mlops-pipeline-monitoring/mlops-pipeline-monitoring
 
 ---
 
-**Une fois le dashboard ouvert, vous devriez voir tous les graphiques avec les métriques !** 🎉
 

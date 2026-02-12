@@ -1,10 +1,10 @@
 # 🔍 Monitoring Vide - Guide de Résolution
 
-## 🎯 Problème
+## Problème
 
 Vous pouvez accéder à Prometheus (http://localhost:9090) et Grafana (http://localhost:3000) mais **ils n'affichent aucune donnée**.
 
-## ✅ Solution : 3 Étapes Obligatoires
+## Solution : 3 Étapes
 
 ### Étape 1 : Lancer l'API FastAPI
 
@@ -30,7 +30,7 @@ uvicorn src.inference.api:app --reload --port 8000
 2. **Vérifier les Targets** :
    - Aller dans **Status → Targets**
    - Chercher le target `mlops-api`
-   - Il doit être **UP** (vert) ✅
+   - Il doit être **UP**
 
 3. **Si le target est DOWN** :
    - Vérifier que l'API est bien lancée (étape 1)
@@ -97,7 +97,7 @@ Après avoir généré du trafic :
 
 ---
 
-## 📊 Vérification dans Grafana
+## Vérification dans Grafana
 
 1. **Ouvrir Grafana** : http://localhost:3000
    - Login : `admin`
@@ -171,7 +171,7 @@ curl http://localhost:8000/metrics | Select-String "model_loaded"
 
 ---
 
-## ✅ Checklist Complète
+## Checklist
 
 - [ ] Docker Desktop est lancé
 - [ ] Services Docker sont lancés : `docker-compose ps` (Prometheus, Grafana doivent être UP)
@@ -185,7 +185,7 @@ curl http://localhost:8000/metrics | Select-String "model_loaded"
 
 ---
 
-## 🚀 Script de Vérification Automatique
+## Script de Vérification
 
 Créer un fichier `check_monitoring.ps1` :
 
@@ -241,20 +241,12 @@ Exécuter :
 
 ---
 
-## 📝 Résumé
+## Résumé
 
-**Le monitoring est vide car** :
-1. ❌ L'API n'est pas lancée → Prometheus ne peut pas scraper
-2. ❌ Aucune requête n'a été faite → Pas de métriques à afficher
-3. ❌ Le modèle n'est pas chargé → Certaines métriques manquent
+**Causes** : API non lancée, aucune requête faite, ou modèle non chargé.
 
 **Solution** :
-1. ✅ Lancer l'API : `uvicorn src.inference.api:app --reload`
-2. ✅ Générer du trafic : `python scripts/generate_traffic.py`
-3. ✅ Vérifier dans Prometheus : http://localhost:9090 → Chercher `api_requests_total`
-4. ✅ Vérifier dans Grafana : http://localhost:3000 → Dashboard "MLOps Pipeline - Monitoring"
-
----
-
-**Une fois ces étapes faites, le monitoring devrait afficher des données !** 🎉
+1. Lancer l'API : `uvicorn src.inference.api:app --reload`
+2. Générer du trafic : `python scripts/generate_traffic.py`
+3. Vérifier Prometheus (localhost:9090) et Grafana (localhost:3000)
 

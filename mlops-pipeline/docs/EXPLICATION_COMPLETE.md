@@ -1,12 +1,12 @@
-# 📚 Explication Complète du Projet MLOps - Prometheus LLM
+# Explication du Projet MLOps - Prometheus
 
-## 🎯 Vue d'Ensemble du Projet
+## Vue d'ensemble
 
-Ce document explique **en détail** tout ce qui a été fait dans le projet **Pipeline MLOps pour Classification de Documents**. Il s'agit d'un pipeline MLOps complet qui démontre l'industrialisation d'un modèle de Machine Learning de bout en bout.
+Documentation technique du pipeline MLOps pour classification de documents.
 
 ---
 
-## 📋 Table des Matières
+## Table des Matières
 
 1. [Contexte et Objectifs](#1-contexte-et-objectifs)
 2. [Architecture Globale](#2-architecture-globale)
@@ -586,13 +586,13 @@ retrain:
 
 ### 7.1 Tests Effectués
 
-✅ **Import des modules** : Tous les imports fonctionnent
-✅ **Chargement des données** : 120,000 lignes chargées
-✅ **Configuration** : Variables d'environnement résolues
-✅ **MLflow** : Backend fichiers local configuré
-✅ **AutoRetrainer** : Initialisation réussie
-✅ **Détection absence modèle** : Gestion correcte
-✅ **Démarrage entraînement** : Pipeline fonctionne
+- **Import des modules** : Tous les imports fonctionnent
+- **Chargement des données** : 120,000 lignes chargées
+- **Configuration** : Variables d'environnement résolues
+- **MLflow** : Backend fichiers local configuré
+- **AutoRetrainer** : Initialisation réussie
+- **Détection absence modèle** : Gestion correcte
+- **Démarrage entraînement** : Pipeline fonctionne
 
 ### 7.2 Problèmes Rencontrés
 
@@ -623,7 +623,7 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\u2705'
 
 **Solution** :
 - Remplacé tous les emojis par du texte simple
-- `✅` → `[OK]`
+- Checkmark emoji remplacé par `[OK]`
 - `❌` → `[ERROR]`
 - `⏸️` → `[INFO]`
 - `📊` → `[INFO]`
@@ -676,18 +676,18 @@ Aucune connexion n'a pu être établie
 
 ## 9. État Actuel du Projet
 
-### 9.1 Fonctionnalités Implémentées ✅
+### 9.1 Fonctionnalités Implémentées
 
-- ✅ **Training Pipeline** : Entraînement avec MLflow tracking
-- ✅ **API FastAPI** : Prédictions avec validation et logging
-- ✅ **Monitoring** : Détection de drift
-- ✅ **Auto-Retrain** : Pipeline complet avec comparaison et déploiement
-- ✅ **Configuration** : Centralisée dans YAML
-- ✅ **Logging** : Structuré en JSON
-- ✅ **Validation** : Pydantic pour les inputs
-- ✅ **CI/CD** : GitHub Actions (tests + linting)
-- ✅ **Docker** : Containerisation
-- ✅ **Documentation** : Complète et détaillée
+- - **Training Pipeline** : Entraînement avec MLflow tracking
+- - **API FastAPI** : Prédictions avec validation et logging
+- - **Monitoring** : Détection de drift
+- - **Auto-Retrain** : Pipeline complet avec comparaison et déploiement
+- - **Configuration** : Centralisée dans YAML
+- - **Logging** : Structuré en JSON
+- - **Validation** : Pydantic pour les inputs
+- - **CI/CD** : GitHub Actions (tests + linting)
+- - **Docker** : Containerisation
+- - **Documentation** : Complète et détaillée
 
 ### 9.2 Fonctionnalités à Ajouter
 
@@ -701,12 +701,12 @@ Aucune connexion n'a pu être établie
 
 **Avancement global** : ~90%
 
-- Training : 100% ✅
-- Deployment : 100% ✅
+- Training : 100% -
+- Deployment : 100% -
 - Monitoring : 90% (manque dashboards)
-- Auto-Retrain : 100% ✅
+- Auto-Retrain : 100% -
 - CI/CD : 80% (manque déploiement automatique)
-- Documentation : 100% ✅
+- Documentation : 100% -
 
 ---
 
@@ -781,11 +781,11 @@ crontab -e
 
 ### 11.2 Bonnes Pratiques
 
-- ✅ **Logging structuré** : JSON pour faciliter l'analyse
-- ✅ **Validation** : Pydantic pour protéger l'API
-- ✅ **Versioning** : MLflow pour modèles, DVC pour données
-- ✅ **Monitoring** : Prometheus pour métriques
-- ✅ **Documentation** : Complète et à jour
+- - **Logging structuré** : JSON pour faciliter l'analyse
+- - **Validation** : Pydantic pour protéger l'API
+- - **Versioning** : MLflow pour modèles, DVC pour données
+- - **Monitoring** : Prometheus pour métriques
+- - **Documentation** : Complète et à jour
 
 ### 11.3 Différenciation
 

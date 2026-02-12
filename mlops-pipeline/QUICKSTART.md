@@ -1,6 +1,4 @@
-# 🚀 Quick Start - Pipeline MLOps
-
-## Démarrage en 5 minutes
+# Quick Start - Pipeline MLOps
 
 ### 1. Installation
 
@@ -43,14 +41,14 @@ curl -X POST "http://localhost:8000/predict" \
   -d '{"text": "artificial intelligence machine learning"}'
 ```
 
-## 📊 Accéder aux services
+## Services
 
 - **API** : http://localhost:8000
 - **MLflow UI** : http://localhost:5000 (lancer avec `mlflow ui`)
 - **Prometheus** : http://localhost:9090 (après `docker-compose up`)
 - **Grafana** : http://localhost:3000 (après `docker-compose up`)
 
-## 🎯 Prochaines étapes
+## Prochaines étapes
 
 1. Explorer les métriques dans MLflow (http://localhost:5000)
 2. Lancer l'API : `uvicorn src.inference.api:app --reload`
@@ -58,7 +56,7 @@ curl -X POST "http://localhost:8000/predict" \
 4. Vérifier Prometheus (http://localhost:9090) et Grafana (http://localhost:3000)
 5. Tester l'auto-retrain : `python scripts/trigger_retrain.py --trigger manual`
 
-## 📚 Documentation
+## Documentation
 
 - **README.md** : Vue d'ensemble complète
 - **docs/EXPLICATION_COMPLETE.md** : Explication détaillée de tout

@@ -1,14 +1,14 @@
-# Résumé des Plans MLOPS pour LLM - Version 1.0
+# Résumé des Plans MLOPS - Version 1.0
 
 **Date :** 2025-11-10  
-**Objectif :** Document de référence pour LLM sur les plans MLOPS
+**Objectif :** Document de référence pour les plans MLOPS
 
 ---
 
-## 🎯 Vue d'Ensemble
+## Vue d'Ensemble
 
 ### Objectif Principal
-Construire un **pipeline MLOPS end-to-end complet** pour démontrer la maîtrise de l'industrialisation de l'IA, dans le cadre d'une transition professionnelle vers l'IA/MLOps (objectif : intégrer une startup deeptech IA/MLOps en février/mars 2026).
+Construire un **pipeline MLOPS end-to-end complet** pour démontrer la maîtrise de l'industrialisation du ML, dans le cadre d'une transition professionnelle vers le MLOps (objectif : intégrer une startup deeptech MLOps en février/mars 2026).
 
 ### Contexte
 - **Timeline** : 4-5 semaines de développement
@@ -17,7 +17,7 @@ Construire un **pipeline MLOPS end-to-end complet** pour démontrer la maîtrise
 
 ---
 
-## 📋 Description du Projet Pipeline MLOPS
+## Description du Projet
 
 ### Cas d'Usage
 **Fine-tuning d'un modèle pour classification de documents** (complémentaire à MyChatDrive RAG)
@@ -47,7 +47,7 @@ Train → Deploy → Monitor → Retrain
 
 ---
 
-## 🛠️ Fonctionnalités Clés
+## Fonctionnalités Clés
 
 ### 1. Training Pipeline
 - Preprocessing des données
@@ -81,7 +81,7 @@ Train → Deploy → Monitor → Retrain
 
 ---
 
-## 📁 Structure du Projet
+## Structure du Projet
 
 ```
 mlops-pipeline/
@@ -106,7 +106,7 @@ mlops-pipeline/
 
 ---
 
-## 📅 Plan d'Implémentation Détaillé
+## Plan d'Implémentation
 
 ### Semaine 1 : Setup & Training
 - [ ] Setup MLflow + DVC
@@ -140,7 +140,7 @@ mlops-pipeline/
 
 ---
 
-## 📊 Métriques à Tracker
+## Métriques à Tracker
 
 ### Performance
 - Accuracy, Precision, Recall, F1
@@ -159,7 +159,7 @@ mlops-pipeline/
 
 ---
 
-## 🎯 Différenciation du Projet
+## Différenciation
 
 1. **Monitoring complet** : Drift + Performance + Coûts
 2. **Auto-retrain** : Pipeline automatique de retraining
@@ -169,7 +169,7 @@ mlops-pipeline/
 
 ---
 
-## 📈 Livrables Attendus
+## Livrables Attendus
 
 - [ ] Code sur GitHub (bien documenté)
 - [ ] Article technique : "De RAG à Production : Comment j'ai industrialisé un modèle ML"
@@ -178,7 +178,7 @@ mlops-pipeline/
 
 ---
 
-## 🎯 Positionnement dans le Plan Global (4 Mois)
+## Positionnement (4 Mois)
 
 ### Mois 1 (Semaines 1-4)
 - **Semaines 1-2** : Finaliser Assistant Courses + Setup
@@ -198,13 +198,12 @@ mlops-pipeline/
 
 ---
 
-## 🎯 Principes d'Apprentissage
+## Principes d'Apprentissage
 
 ### Règles d'Or
 1. **Comprendre → Implémenter → Apprendre**
 2. **Coder d'abord, demander après**
-3. **Sessions "sans IA" régulières** (1-2 fois/semaine)
-4. **Expliquer pour maîtriser** (expliquer à l'IA après chaque fonctionnalité)
+3. **Expliquer pour maîtriser** (documenter après chaque fonctionnalité)
 
 ### Workflow
 1. **Comprendre** (30% du temps) : Concepts, outils, approches
@@ -213,7 +212,7 @@ mlops-pipeline/
 
 ---
 
-## 🎯 Structure Quotidienne (12h/jour)
+## Structure Quotidienne (12h/jour)
 
 ### Matin : Deep Work - Projets (4h)
 - **8h-12h** : Focus total Pipeline MLOps
@@ -231,7 +230,7 @@ mlops-pipeline/
 ### Soir : Réseau + Veille (2h)
 - **19h-21h** :
   - Réseau LinkedIn : 30min
-  - Veille IA (RSS simple) : 30min
+  - Veille tech (RSS simple) : 30min
   - Organisation Notion : 30min
   - Planning jour suivant : 30min
 
@@ -258,7 +257,7 @@ mlops-pipeline/
 
 ---
 
-## 📊 Métriques de Succès
+## Métriques de Succès
 
 ### Quotidiennes
 - [ ] 4h de deep work projets
@@ -267,7 +266,6 @@ mlops-pipeline/
 
 ### Hebdomadaires
 - [ ] Pipeline MLOps : X% d'avancement
-- [ ] Session "sans IA" : 1-2 fois
 - [ ] Documentation à jour
 
 ### Finales (4-5 Semaines)
@@ -279,7 +277,7 @@ mlops-pipeline/
 
 ---
 
-## 🔗 Ressources et Liens Utiles
+## Ressources
 
 - **MLflow** : https://mlflow.org/
 - **DVC** : https://dvc.org/
@@ -291,7 +289,7 @@ mlops-pipeline/
 
 ---
 
-## 🎯 Objectif Final
+## Objectif Final
 
 **Démontrer la capacité à :**
 - Industrialiser un modèle ML de bout en bout
@@ -300,7 +298,7 @@ mlops-pipeline/
 - Automatiser le retraining et le déploiement
 
 **Pour :**
-- Intégrer une startup deeptech IA/MLOps en février/mars 2026
+- Intégrer une startup deeptech MLOps en février/mars 2026
 - Positionner comme profil polyvalent (ML + Infra + DevOps)
 - Construire une expertise reconnue en MLOps
 

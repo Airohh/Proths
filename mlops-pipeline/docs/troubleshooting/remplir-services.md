@@ -1,10 +1,10 @@
-# 📊 Remplir les Services avec des Données
+# Remplir les Services avec des Données
 
-## 🎯 Problème
+## Problème
 
-Les services (Grafana, Prometheus, MLflow) sont vides car **aucune donnée n'a été générée**.
+Les services (Grafana, Prometheus, MLflow) sont vides car aucune donnée n'a été générée.
 
-## ✅ Solution : Générer des Données
+## Solution : Générer des Données
 
 ### Étape 1 : Entraîner un Modèle (Pour MLflow)
 
@@ -15,10 +15,7 @@ cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
 python src/training/train.py --model-type random_forest
 ```
 
-**Résultat** :
-- ✅ Expérience créée dans MLflow
-- ✅ Modèle enregistré
-- ✅ Métriques trackées
+**Résultat** : Expérience créée dans MLflow, modèle enregistré, métriques trackées
 
 **Vérifier** : http://localhost:5000 → Vous devriez voir l'expérience "document-classification"
 
@@ -100,7 +97,7 @@ for ($i=1; $i -le 10; $i++) {
 
 ---
 
-## 📋 Checklist Complète
+## Checklist Complète
 
 ### MLflow (Port 5000)
 
@@ -129,7 +126,7 @@ for ($i=1; $i -le 10; $i++) {
 
 ---
 
-## 🚀 Script Automatique
+## Script Automatique
 
 Pour tout faire d'un coup :
 
@@ -154,7 +151,7 @@ for ($i=1; $i -le 20; $i++) {
 
 ---
 
-## 🎯 Ordre Recommandé
+## Ordre Recommandé
 
 1. **Entraîner un modèle** → Remplit MLflow
 2. **Lancer l'API** → Expose les métriques
@@ -172,5 +169,4 @@ for ($i=1; $i -le 20; $i++) {
 
 ---
 
-**Une fois ces étapes faites, tous les services auront des données !** 🎉
 

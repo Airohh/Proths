@@ -1,6 +1,6 @@
 # 🐳 Problème Docker - Guide de Résolution
 
-## ❌ Problème Identifié
+## Problème
 
 L'erreur `docker : Le terme 'docker' n'est pas reconnu` signifie que :
 - Docker n'est **pas installé** sur votre machine, OU
@@ -19,7 +19,7 @@ docker --version
 → Docker n'est pas installé ou pas dans le PATH
 
 **Si vous voyez** : `Docker version 20.10.x` ou similaire
-→ Docker est installé ✅
+→ Docker est installé
 
 ### Vérifier si Docker Desktop est installé
 
@@ -28,7 +28,7 @@ docker --version
 3. Si trouvé → Docker est installé mais peut-être pas démarré
 4. Si non trouvé → Docker n'est pas installé
 
-## ✅ Solutions
+## Solutions
 
 ### Solution 1 : Installer Docker Desktop (Recommandé)
 
@@ -60,7 +60,7 @@ docker-compose --version
 docker ps
 ```
 
-**Si ça fonctionne** → Docker est prêt ! ✅
+**Si ça fonctionne** → Docker est prêt
 
 ---
 
@@ -99,10 +99,10 @@ docker --version
 **Bonne nouvelle** : Docker n'est **pas obligatoire** pour utiliser le projet !
 
 Vous pouvez utiliser :
-- ✅ **MLflow UI** : Sans Docker
-- ✅ **API FastAPI** : Sans Docker
-- ⚠️ **Prometheus** : Optionnel (pour monitoring avancé)
-- ⚠️ **Grafana** : Optionnel (pour visualisation avancée)
+- **MLflow UI** : Sans Docker
+- **API FastAPI** : Sans Docker
+- **Prometheus** : Optionnel (monitoring avancé)
+- **Grafana** : Optionnel (visualisation avancée)
 
 #### Services Essentiels (Sans Docker)
 
@@ -116,11 +116,10 @@ cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
 uvicorn src.inference.api:app --reload --port 8000
 ```
 
-**C'est suffisant pour tester le projet !** 🎉
 
 ---
 
-## 🎯 Recommandation
+## Recommandation
 
 ### Pour Développement Local
 
@@ -197,7 +196,7 @@ taskkill /PID <PID> /F
 
 ---
 
-## 🚀 Après Installation Docker
+## Après Installation
 
 Une fois Docker installé, vous pouvez lancer :
 
@@ -227,7 +226,7 @@ sudo service docker start
 
 ---
 
-## 📚 Ressources
+## Ressources
 
 - **Docker Desktop** : https://www.docker.com/products/docker-desktop
 - **Documentation Docker** : https://docs.docker.com/
@@ -235,7 +234,7 @@ sudo service docker start
 
 ---
 
-## ✅ Résumé
+## Résumé
 
 **Problème** : Docker non installé ou pas dans PATH
 

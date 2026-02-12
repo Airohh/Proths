@@ -1,4 +1,4 @@
-# 🔧 Guide de Dépannage
+# Guide de Dépannage
 
 ## Problèmes Courants et Solutions
 
