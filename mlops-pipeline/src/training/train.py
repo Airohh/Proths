@@ -1,6 +1,7 @@
 """
 Pipeline de training avec MLflow tracking
 """
+import json
 import os
 import sys
 import argparse
@@ -15,9 +16,13 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import lightgbm as lgb
 
 # Ajouter le répertoire parent au path
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from src.training.preprocessing import preprocess_data
+from src.training.preprocessing import (
+    preprocess_data,
+    transform_texts,
+    load_preprocessing_artifacts,
+)
 
 
 def train_baseline_model(X_train, y_train, X_val, y_val, model_type='random_forest'):
@@ -78,6 +83,10 @@ def main():
                        help='Type de modèle à entraîner')
     parser.add_argument('--experiment-name', type=str, default='document-classification',
                        help='Nom de l\'expérience MLflow')
+    parser.add_argument('--holdout', type=str, default='data/processed/holdout.csv',
+                       help='CSV holdout (ignoré s\'il n\'existe pas)')
+    parser.add_argument('--metrics-out', type=str, default='reports/metrics.json',
+                       help='Où écrire les métriques')
     
     args = parser.parse_args()
     
@@ -138,6 +147,41 @@ def main():
         model_path.parent.mkdir(exist_ok=True)
         mlflow.sklearn.save_model(model, str(model_path))
         print(f"\n[OK] Modele sauvegarde dans {model_path}")
+
+        report = {
+            "dataset": Path(args.data_path).name,
+            "model_type": args.model_type,
+            "n_train": int(train_size),
+            "n_val": int(val_size),
+            "val": {k: float(v) for k, v in metrics.items()},
+        }
+
+        holdout_path = Path(args.holdout)
+        if holdout_path.exists():
+            holdout = pd.read_csv(holdout_path)
+            vectorizer, label_encoder = load_preprocessing_artifacts()
+            X_h = transform_texts(holdout, vectorizer=vectorizer)
+            y_h = label_encoder.transform(holdout["label"])
+            y_h_pred = model.predict(X_h)
+            holdout_metrics = {
+                "accuracy": float(accuracy_score(y_h, y_h_pred)),
+                "precision": float(precision_score(y_h, y_h_pred, average="weighted")),
+                "recall": float(recall_score(y_h, y_h_pred, average="weighted")),
+                "f1_score": float(f1_score(y_h, y_h_pred, average="weighted")),
+                "n": int(len(holdout)),
+            }
+            report["holdout"] = holdout_metrics
+            for name, value in holdout_metrics.items():
+                if name != "n":
+                    mlflow.log_metric(f"holdout_{name}", value)
+            print("\n[INFO] Holdout:")
+            for name, value in holdout_metrics.items():
+                print(f"   {name}: {value}" if name == "n" else f"   {name}: {value:.4f}")
+
+        metrics_path = Path(args.metrics_out)
+        metrics_path.parent.mkdir(parents=True, exist_ok=True)
+        metrics_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(f"[OK] Metriques: {metrics_path}")
 
 
 if __name__ == "__main__":

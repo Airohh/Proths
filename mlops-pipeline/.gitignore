@@ -24,6 +24,8 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
+reports/_test_metrics.json
+
 # Models
 models/*
 !models/.gitkeep

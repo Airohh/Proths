@@ -16,7 +16,6 @@ install:
 	pip install -r requirements.txt
 
 download-data:
-	python scripts/download_dataset.py --source popular --type news
 	python scripts/prepare_ag_news.py
 
 generate-data:

@@ -3,14 +3,14 @@
 Lab local. Boucle visée : **Train → Registry → Serve → Observe → Retrain**.
 
 ```
-CSV démo ──► TF-IDF ──► RF / LightGBM ──► MLflow (run + registry)
+AG News ──► TF-IDF ──► Random Forest ──► MLflow (run + registry)
                                               │
                                               ▼
                                          FastAPI /predict
                                               │
                                          /metrics ──► Prometheus ──► Grafana
                                               │
-                         retrain manuel ou drift (train.csv vs drift.csv)
+                         drift vs journal /predict (predictions.csv)
                                               │
                          promote Production si ΔF1 ≥ 0.01 ──► POST /model/reload
 ```

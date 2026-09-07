@@ -57,7 +57,7 @@ def monitor_loop():
             if not current_path.exists():
                 logger.error(
                     f"CSV courant introuvable: {current_path} "
-                    "(python scripts/generate_drift_data.py)"
+                    "(envoie du trafic: python scripts/generate_traffic.py)"
                 )
                 time.sleep(check_interval)
                 continue

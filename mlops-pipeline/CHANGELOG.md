@@ -17,5 +17,7 @@ Lab MLOps local. Pas une plateforme 100 %.
 
 ## 2026-09
 
-- README honnête, licence MIT, docs-cours / DVC / Timescale retirés
-- Drift à deux CSV, API dans Compose, charge Production + reload
+- AG News par défaut, F1 holdout ~0.73 dans `reports/metrics.json`
+- Journal `/predict` → drift sur `predictions.csv`
+- CI : boucle train → predict → drift
+- Docs-cours / DVC / Timescale retirés ; API dans Compose

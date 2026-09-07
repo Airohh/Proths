@@ -17,6 +17,7 @@ import traceback
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from src.training.preprocessing import load_preprocessing_artifacts
+from src.inference.prediction_log import log_predictions
 from src.utils.logger import get_logger
 from src.utils.validators import (
     DocumentInput,
@@ -233,7 +234,10 @@ async def predict(document: DocumentInput):
         
         # Métriques
         PREDICTION_COUNT.labels(model_type=model_type).inc()
-        
+        log_predictions(
+            [{"text": document.text, "label": label, "confidence": confidence}]
+        )
+
         logger.info(
             "Prédiction effectuée",
             extra={
@@ -304,8 +308,17 @@ async def predict_batch(documents: BatchDocumentInput):
                 )
             )
         
-        # Métriques
         PREDICTION_COUNT.labels(model_type=model_type).inc(len(documents.texts))
+        log_predictions(
+            [
+                {
+                    "text": text,
+                    "label": item.prediction,
+                    "confidence": item.confidence,
+                }
+                for text, item in zip(documents.texts, results)
+            ]
+        )
         
         logger.info(
             f"Batch prédiction effectuée pour {len(documents.texts)} documents",

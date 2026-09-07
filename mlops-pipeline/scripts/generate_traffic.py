@@ -13,16 +13,19 @@ API_URL = "http://localhost:8000"
 
 # Exemples de textes pour tester
 TEXTS = [
-    "artificial intelligence machine learning",
-    "sports football basketball tennis",
-    "business economy stock market",
-    "technology computer science",
-    "world news international politics",
-    "science research discovery",
-    "business finance investment",
-    "sports olympics competition",
-    "technology innovation startup",
-    "world climate environment"
+    "Oil prices fall as OPEC signals higher output next quarter",
+    "Senate debates new sanctions after overnight diplomatic talks",
+    "Chipmaker forecasts weaker data-center demand this year",
+    "Central bank holds rates as inflation cools for a third month",
+]
+
+SPORTS_TEXTS = [
+    "Lakers defeat Celtics in overtime NBA playoff thriller",
+    "Manchester United wins Champions League final on penalties",
+    "Wimbledon champion claims third straight Grand Slam title",
+    "Olympic swimmer breaks 200 meter freestyle world record",
+    "Tour de France leader extends yellow jersey advantage",
+    "World Cup quarterfinal goes to a penalty shootout",
 ]
 
 
@@ -44,7 +47,7 @@ def test_health():
         return False
 
 
-def generate_traffic(num_requests=20, delay=1):
+def generate_traffic(num_requests=20, delay=1, skew="none"):
     """Génère du trafic vers l'API"""
     print(f"\n[INFO] Generation de {num_requests} requetes...")
     print(f"[INFO] API URL: {API_URL}\n")
@@ -53,7 +56,8 @@ def generate_traffic(num_requests=20, delay=1):
     errors = 0
     
     for i in range(num_requests):
-        text = TEXTS[i % len(TEXTS)]
+        pool = SPORTS_TEXTS if skew == "sports" else TEXTS
+        text = pool[i % len(pool)]
         
         try:
             response = requests.post(
@@ -102,6 +106,12 @@ def main():
         default=1.0,
         help='Delai entre les requetes en secondes (default: 1.0)'
     )
+    parser.add_argument(
+        "--skew",
+        choices=["none", "sports"],
+        default="none",
+        help="sports: mix biaisé pour déclencher le drift sur le journal",
+    )
     
     args = parser.parse_args()
     
@@ -116,7 +126,8 @@ def main():
         sys.exit(1)
     
     # Générer le trafic
-    generate_traffic(num_requests=args.requests, delay=args.delay)
+    generate_traffic(num_requests=args.requests, delay=args.delay, skew=args.skew)
+    print("[INFO] Predictions loguees dans data/processed/predictions.csv")
 
 
 if __name__ == "__main__":

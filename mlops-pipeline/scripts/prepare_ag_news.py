@@ -1,85 +1,51 @@
-"""
-Script pour préparer le dataset AG News avec les noms de catégories
-"""
-import pandas as pd
-from pathlib import Path
+"""Télécharge AG News (Hugging Face), mappe les 4 classes, écrit train + holdout."""
+import argparse
 import sys
+from pathlib import Path
+
+import pandas as pd
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.utils.logger import get_logger
+LABELS = {0: "World", 1: "Sports", 2: "Business", 3: "Sci/Tech"}
 
-logger = get_logger(__name__)
 
-# Mapping des labels AG News
-LABEL_MAPPING = {
-    0: "World",
-    1: "Sports", 
-    2: "Business",
-    3: "Sci/Tech"
-}
+def _to_frame(split, limit: int, seed: int) -> pd.DataFrame:
+    from datasets import load_dataset
 
-def prepare_ag_news(input_file: str = "data/raw/ag_news_train.csv", 
-                    output_file: str = "data/processed/train.csv"):
-    """
-    Prépare le dataset AG News en convertissant les labels numériques en noms
-    
-    Args:
-        input_file: Fichier d'entrée
-        output_file: Fichier de sortie
-    """
-    logger.info(f"Chargement du dataset depuis {input_file}")
-    df = pd.read_csv(input_file)
-    
-    logger.info(f"Dataset chargé: {len(df)} lignes")
-    logger.info(f"Colonnes: {df.columns.tolist()}")
-    
-    # Vérifier si les labels sont numériques
-    if 'label' in df.columns and df['label'].dtype in ['int64', 'int32', 'float64']:
-        logger.info("Conversion des labels numériques en noms de catégories")
-        df['label'] = df['label'].map(LABEL_MAPPING)
-        
-        # Vérifier qu'il n'y a pas de valeurs manquantes
-        missing = df['label'].isna().sum()
-        if missing > 0:
-            logger.warning(f"{missing} labels non mappés trouvés")
-            df = df.dropna(subset=['label'])
-    
-    # S'assurer que les colonnes sont 'text' et 'label'
-    if 'text' not in df.columns or 'label' not in df.columns:
-        logger.error(f"Colonnes attendues: 'text' et 'label'. Trouvées: {df.columns.tolist()}")
-        raise ValueError("Format de colonnes incorrect")
-    
-    # Créer le répertoire de sortie
-    output_path = Path(output_file)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    # Sauvegarder
-    df.to_csv(output_file, index=False)
-    logger.info(f"[OK] Dataset prepare sauvegarde dans {output_file}")
-    logger.info(f"[INFO] Repartition des classes:")
-    print(df['label'].value_counts())
-    
-    # Afficher quelques exemples
-    logger.info("\n[INFO] Exemples de donnees:")
-    for i in range(min(3, len(df))):
-        print(f"\nExemple {i+1}:")
-        print(f"  Label: {df.iloc[i]['label']}")
-        print(f"  Texte: {df.iloc[i]['text'][:100]}...")
-    
+    ds = load_dataset("ag_news", split=split)
+    ds = ds.shuffle(seed=seed)
+    if limit and limit < len(ds):
+        ds = ds.select(range(limit))
+    df = pd.DataFrame(ds)
+    if df["label"].dtype != object:
+        df["label"] = df["label"].map(LABELS)
+    df = df[["text", "label"]].dropna()
     return df
 
 
-if __name__ == "__main__":
-    import argparse
-    
-    parser = argparse.ArgumentParser(description="Préparer le dataset AG News")
-    parser.add_argument("--input", type=str, default="data/raw/ag_news_train.csv",
-                       help="Fichier d'entrée")
-    parser.add_argument("--output", type=str, default="data/processed/train.csv",
-                       help="Fichier de sortie")
-    
+def main():
+    parser = argparse.ArgumentParser(description="Préparer AG News")
+    parser.add_argument("--train-limit", type=int, default=4000)
+    parser.add_argument("--holdout-limit", type=int, default=800)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--train-out", default="data/processed/train.csv")
+    parser.add_argument("--holdout-out", default="data/processed/holdout.csv")
     args = parser.parse_args()
-    
-    prepare_ag_news(args.input, args.output)
 
+    print("[INFO] Téléchargement AG News (Hugging Face)...")
+    train = _to_frame("train", args.train_limit, args.seed)
+    holdout = _to_frame("test", args.holdout_limit, args.seed)
+
+    Path(args.train_out).parent.mkdir(parents=True, exist_ok=True)
+    train.to_csv(args.train_out, index=False)
+    holdout.to_csv(args.holdout_out, index=False)
+
+    print(f"[OK] train    {len(train)} -> {args.train_out}")
+    print(train["label"].value_counts().to_string())
+    print(f"[OK] holdout  {len(holdout)} -> {args.holdout_out}")
+    print(holdout["label"].value_counts().to_string())
+
+
+if __name__ == "__main__":
+    main()

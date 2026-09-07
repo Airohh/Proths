@@ -5,7 +5,7 @@ data:
   raw_path: "data/raw"
   processed_path: "data/processed"
   train_file: "train.csv"
-  current_file: "drift.csv"
+  current_file: "predictions.csv"
   test_file: "test.csv"
   validation_split: 0.2
   random_seed: 42
