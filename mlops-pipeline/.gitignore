@@ -13,9 +13,12 @@ ENV/
 mlruns/
 .mlflow/
 
-# DVC
+# DVC (non utilisé)
 .dvc/
 *.dvc
+
+# Graphify
+graphify-out/
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep

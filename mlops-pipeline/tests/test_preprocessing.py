@@ -12,20 +12,23 @@ def test_preprocessing():
     # Données de test
     df = pd.DataFrame({
         'text': [
-            'This is a test document about technology',
-            'Another document about science',
-            'A third document about sports'
+            'This is a test document about technology and computers',
+            'Another test document about technology and software',
+            'A science document about physics and research',
+            'Another science document about physics and biology',
+            'A sports document about football and tennis',
+            'Another sports document about football and basketball',
         ],
-        'label': ['tech', 'science', 'sports']
+        'label': ['tech', 'tech', 'science', 'science', 'sports', 'sports']
     })
     
     # Preprocessing
     X, y = preprocess_data(df, text_column='text', label_column='label')
     
     # Vérifications
-    assert X.shape[0] == 3  # 3 documents
-    assert len(y) == 3  # 3 labels
-    assert len(np.unique(y)) == 3  # 3 classes uniques
+    assert X.shape[0] == 6
+    assert len(y) == 6
+    assert len(np.unique(y)) == 3
 
 
 def test_preprocessing_missing_column():

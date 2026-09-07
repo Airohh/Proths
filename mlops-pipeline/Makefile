@@ -14,7 +14,6 @@ help:
 
 install:
 	pip install -r requirements.txt
-	dvc init
 
 download-data:
 	python scripts/download_dataset.py --source popular --type news

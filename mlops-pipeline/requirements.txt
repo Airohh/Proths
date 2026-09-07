@@ -6,8 +6,6 @@ numpy==1.24.3
 
 # MLOps Tools
 mlflow==2.9.2
-dvc==3.38.1
-dvc-s3==3.0.0
 
 # API
 fastapi==0.104.1

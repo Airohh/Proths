@@ -13,7 +13,7 @@ Vous pouvez accéder à Prometheus (http://localhost:9090) et Grafana (http://lo
 **Dans un terminal PowerShell** :
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 uvicorn src.inference.api:app --reload --port 8000
 ```
 
@@ -52,7 +52,7 @@ uvicorn src.inference.api:app --reload --port 8000
 **Option A : Script Python (Recommandé)**
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 python scripts/generate_traffic.py
 ```
 

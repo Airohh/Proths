@@ -108,11 +108,11 @@ Vous pouvez utiliser :
 
 ```powershell
 # Terminal 1 - MLflow UI
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 mlflow ui --port 5000
 
 # Terminal 2 - API
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 uvicorn src.inference.api:app --reload --port 8000
 ```
 
@@ -201,15 +201,11 @@ taskkill /PID <PID> /F
 Une fois Docker installé, vous pouvez lancer :
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
-docker-compose up -d
+cd mlops-pipeline
+docker compose up -d
 ```
 
-Cela lancera :
-- Prometheus (port 9090)
-- Grafana (port 3000)
-- MLflow (port 5000)
-- TimescaleDB (port 5432)
+Cela lance Prometheus (9090), Grafana (3000) et MLflow (5000). L’API se lance à part (`uvicorn`).
 
 ---
 

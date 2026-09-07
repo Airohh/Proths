@@ -36,7 +36,6 @@ docker-compose up -d
 - Prometheus : http://localhost:9090
 - Grafana : http://localhost:3000 (admin/admin)
 - MLflow : http://localhost:5000
-- TimescaleDB : localhost:5432
 
 ## Vérifier que les Services Tournent
 

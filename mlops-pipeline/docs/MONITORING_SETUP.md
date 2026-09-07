@@ -224,8 +224,7 @@ CUSTOM_METRIC.inc()
    - Actions claires
 
 3. **Retention des données** :
-   - Configurer la rétention Prometheus
-   - Utiliser TimescaleDB pour long terme
+   - Configurer la rétention Prometheus (défaut Compose)
 
 4. **Dashboards** :
    - Un dashboard par équipe/service

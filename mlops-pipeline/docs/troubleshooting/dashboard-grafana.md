@@ -76,7 +76,7 @@ Vous devriez voir des messages indiquant que le dashboard est chargé.
 Si le dashboard n'apparaît pas après l'import automatique :
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 docker-compose restart grafana
 ```
 

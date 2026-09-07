@@ -1,152 +1,29 @@
-# Pipeline MLOps - Classification de Documents
+# mlops-pipeline
 
-Pipeline MLOps : Train → Deploy → Monitor → Retrain
-
-## Structure du Projet
-
-```
-mlops-pipeline/
-├── data/
-│   ├── raw/              # Données brutes
-│   ├── processed/        # Données préprocessées
-│   └── .dvc/             # Versioning DVC
-├── models/               # Modèles sauvegardés
-├── src/
-│   ├── training/         # Code d'entraînement
-│   ├── inference/        # Code de prédiction
-│   ├── monitoring/       # Code de monitoring
-│   ├── retraining/       # Code d'auto-retrain
-│   └── utils/            # Utilitaires
-├── tests/                # Tests unitaires
-├── docker/               # Configs Docker
-├── .github/workflows/    # CI/CD
-├── notebooks/            # Notebooks d'exploration
-└── docs/                 # Documentation
-```
-
-## Stack Technique
-
-- **MLflow** : Tracking d'expériences, registry de modèles
-- **DVC** : Versioning des données
-- **FastAPI** : API de prédiction
-- **Docker** : Containerisation
-- **GitHub Actions** : CI/CD
-- **Prometheus** : Collecte de métriques
-- **Grafana** : Visualisation
-- **TimescaleDB** : Stockage métriques temporelles
-
-## Quick Start
-
-### Installation
+Application du lab. Pitch et limites : [README racine](../README.md).
 
 ```bash
-# Cloner le repo
-git clone <repo-url>
-cd mlops-pipeline
-
-# Créer environnement virtuel
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Installer dépendances
+python -m venv .venv
+# Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-
-# Setup DVC
-dvc init
-dvc remote add -d storage <remote-storage>
-
-# Setup MLflow
-mlflow ui --port 5000
-```
-
-### Training
-
-```bash
-python src/training/train.py
-```
-
-### API
-
-```bash
+python scripts/generate_sample_data.py
+python scripts/generate_drift_data.py
+python src/training/train.py --model-type random_forest
 uvicorn src.inference.api:app --reload
+# ou docker compose up -d --build
 ```
-
-### Monitoring
-
-**Option 1 : Avec Docker** (Prometheus + Grafana)
-```bash
-# Lancer Prometheus et Grafana
-docker-compose up -d
-
-# Accéder aux services:
-# - Prometheus: http://localhost:9090
-# - Grafana: http://localhost:3000 (admin/admin)
-```
-
-**Option 2 : Sans Docker** (MLflow UI seulement)
-```bash
-# Lancer MLflow UI
-mlflow ui --port 5000
-
-# Accéder: http://localhost:5000
-```
-
-**Note** : Si Docker n'est pas installé, voir `docs/troubleshooting/installation-docker.md`
-
-### Auto-Retrain
 
 ```bash
-# Retrain manuel
-python scripts/trigger_retrain.py --trigger manual
-
-# Retrain avec détection de drift
-python scripts/trigger_retrain.py --trigger drift
-
-# Monitoring continu avec auto-retrain
-python scripts/monitor_and_retrain.py
-
-# Une seule vérification
-python scripts/monitor_and_retrain.py --once
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d "{\"text\": \"artificial intelligence machine learning\"}"
 ```
 
-### Tests End-to-End
+| Commande | Rôle |
+|----------|------|
+| `docker compose up -d --build` | API + MLflow + Prometheus + Grafana |
+| `python scripts/generate_traffic.py` | Charge l’API pour remplir les dashboards |
+| `python scripts/trigger_retrain.py --trigger drift --current-data data/processed/drift.csv` | Drift à deux CSV + promote + reload |
+| `pytest tests/ -v` | Tests unitaires (passent sans modèle) |
 
-```bash
-# Tester le pipeline complet
-python scripts/test_end_to_end.py
-```
-
-## Métriques Trackées
-
-- **Performance** : Accuracy, Precision, Recall, F1, Latence, Throughput
-- **Coûts** : Coût par prédiction, Infrastructure, Training
-- **Qualité** : Drift score, Data quality, Model performance over time
-
-## Roadmap
-
-- [x] Structure du projet
-- [x] Setup MLflow + DVC
-- [x] Pipeline de training
-- [x] API FastAPI
-- [x] Monitoring Prometheus/Grafana
-- [x] Auto-retrain
-- [x] CI/CD
-- [x] Dashboards Grafana pré-configurés
-- [x] Alertes Prometheus
-- [ ] A/B Testing avancé
-
-## Documentation
-
-- [QUICKSTART.md](QUICKSTART.md) - Démarrage rapide
-- [docs/EXPLICATION_COMPLETE.md](docs/EXPLICATION_COMPLETE.md) - Documentation technique
-- [docs/AUTO_RETRAIN.md](docs/AUTO_RETRAIN.md) - Auto-retrain
-- [docs/MONITORING_SETUP.md](docs/MONITORING_SETUP.md) - Monitoring Prometheus + Grafana
-- [docs/troubleshooting/](docs/troubleshooting/) - Dépannage
-
-## Liens
-
-- [MLflow](https://mlflow.org/)
-- [DVC](https://dvc.org/)
-- [Prometheus](https://prometheus.io/)
-- [Grafana](https://grafana.com/)
-
+Docs utiles : [QUICKSTART](QUICKSTART.md) · [architecture](docs/architecture.md) · [retrain](docs/AUTO_RETRAIN.md) · [monitoring](docs/MONITORING_SETUP.md) · [datasets](docs/datasets.md)

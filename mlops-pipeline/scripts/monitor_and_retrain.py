@@ -53,17 +53,25 @@ def monitor_loop():
                 time.sleep(check_interval)
                 continue
             
-            # Pour l'instant, on vérifie juste le drift sur les mêmes données
-            # En production, on comparerait avec les données de production collectées
-            drift_score, is_drift = retrainer.check_drift(str(data_path))
-            
+            current_path = Path(processed_path) / data_config.get("current_file", "drift.csv")
+            if not current_path.exists():
+                logger.error(
+                    f"CSV courant introuvable: {current_path} "
+                    "(python scripts/generate_drift_data.py)"
+                )
+                time.sleep(check_interval)
+                continue
+
+            drift_score, is_drift = retrainer.check_drift(
+                str(data_path), current_data_path=str(current_path)
+            )
+
             if is_drift:
                 logger.warning(f"Drift détecté (score: {drift_score:.4f}), déclenchement du retrain...")
-                
-                # Déclencher le retrain
                 result = retrainer.retrain(
                     trigger=RetrainTrigger.DRIFT,
-                    data_path=str(data_path)
+                    data_path=str(data_path),
+                    current_data_path=str(current_path),
                 )
                 
                 if result.success and result.deployed:
@@ -106,6 +114,12 @@ def main():
         default=None,
         help='Intervalle de vérification en secondes (override config)'
     )
+    parser.add_argument(
+        '--current-data',
+        type=str,
+        default=None,
+        help='CSV courant (défaut: data/processed/drift.csv)'
+    )
     
     args = parser.parse_args()
     
@@ -126,12 +140,27 @@ def main():
         if not data_path.exists():
             logger.error(f"Fichier de données introuvable: {data_path}")
             sys.exit(1)
-        
-        drift_score, is_drift = retrainer.check_drift(str(data_path))
-        
+
+        current_path = (
+            Path(args.current_data)
+            if args.current_data
+            else Path(processed_path) / data_config.get("current_file", "drift.csv")
+        )
+        if not current_path.exists():
+            logger.error(f"CSV courant introuvable: {current_path}")
+            sys.exit(1)
+
+        drift_score, is_drift = retrainer.check_drift(
+            str(data_path), current_data_path=str(current_path)
+        )
+
         if is_drift:
-            logger.warning(f"Drift détecté, déclenchement du retrain...")
-            result = retrainer.retrain(trigger=RetrainTrigger.DRIFT, data_path=str(data_path))
+            logger.warning("Drift détecté, déclenchement du retrain...")
+            result = retrainer.retrain(
+                trigger=RetrainTrigger.DRIFT,
+                data_path=str(data_path),
+                current_data_path=str(current_path),
+            )
             
             if result.success:
                 print(f"[OK] Retrain termine: {result.reason}")

@@ -27,7 +27,13 @@ def main():
         '--data-path',
         type=str,
         default=None,
-        help='Chemin vers les données d\'entraînement (optionnel)'
+        help='CSV de référence / train (défaut: data/processed/train.csv)'
+    )
+    parser.add_argument(
+        '--current-data',
+        type=str,
+        default=None,
+        help='CSV courant pour le drift (ex. data/processed/drift.csv)'
     )
     parser.add_argument(
         '--model-type',
@@ -55,7 +61,8 @@ def main():
     result = retrainer.retrain(
         trigger=trigger,
         data_path=args.data_path,
-        model_type=args.model_type
+        model_type=args.model_type,
+        current_data_path=args.current_data,
     )
     
     # Afficher le résultat

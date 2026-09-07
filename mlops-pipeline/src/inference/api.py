@@ -9,6 +9,7 @@ import mlflow.sklearn
 import numpy as np
 from pathlib import Path
 import sys
+import threading
 import time
 import traceback
 
@@ -58,23 +59,61 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Charger le modèle et les artifacts
-logger.info("Chargement du modèle...")
+MODEL_NAME = "document-classifier-random_forest"
+LOCAL_MODEL_DIR = Path("models") / "random_forest_model.pkl"
+
 model = None
 vectorizer = None
 label_encoder = None
 model_type = None
+model_stage = None
+_model_lock = threading.Lock()
 
-try:
-    model = mlflow.sklearn.load_model("models:/document-classifier-random_forest/latest")
-    vectorizer, label_encoder = load_preprocessing_artifacts()
-    model_type = "random_forest"
+
+def load_model() -> dict:
+    """Charge Production, sinon latest, sinon le pickle local."""
+    global model, vectorizer, label_encoder, model_type, model_stage
+    errors = []
+    loaded = None
+    stage = None
+
+    for candidate in ("Production", "latest"):
+        try:
+            loaded = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{candidate}")
+            stage = candidate
+            break
+        except Exception as exc:
+            errors.append(f"{candidate}: {exc}")
+
+    if loaded is None and LOCAL_MODEL_DIR.exists():
+        try:
+            loaded = mlflow.sklearn.load_model(str(LOCAL_MODEL_DIR))
+            stage = "local-pkl"
+        except Exception as exc:
+            errors.append(f"local: {exc}")
+
+    if loaded is None:
+        MODEL_LOADED.set(0)
+        raise RuntimeError("; ".join(errors) if errors else "aucun modèle")
+
+    vec, enc = load_preprocessing_artifacts()
+    with _model_lock:
+        model = loaded
+        vectorizer = vec
+        label_encoder = enc
+        model_type = "random_forest"
+        model_stage = stage
     MODEL_LOADED.set(1)
-    logger.info("Modèle chargé avec succès", extra={'extra_fields': {'model_type': model_type}})
+    logger.info("Modèle chargé", extra={"extra_fields": {"stage": stage}})
+    return {"model_loaded": True, "stage": stage, "model_type": "random_forest"}
+
+
+logger.info("Chargement du modèle...")
+try:
+    load_model()
 except Exception as e:
     logger.error(f"Erreur lors du chargement du modèle: {e}", exc_info=True)
     MODEL_LOADED.set(0)
-    # En production, on pourrait charger un modèle par défaut ou échouer au démarrage
 
 
 @app.exception_handler(Exception)
@@ -301,13 +340,24 @@ async def model_info():
     """Informations sur le modèle chargé"""
     if model is None:
         raise HTTPException(status_code=404, detail="Aucun modèle chargé")
-    
+
     return {
         "model_type": model_type,
+        "model_stage": model_stage,
         "model_loaded": True,
         "classes": label_encoder.classes_.tolist() if label_encoder else None,
-        "n_features": vectorizer.get_feature_names_out().shape[0] if vectorizer else None
+        "n_features": vectorizer.get_feature_names_out().shape[0] if vectorizer else None,
     }
+
+
+@app.post("/model/reload")
+async def reload_model():
+    """Recharge Production (appelé après un promote MLflow)."""
+    try:
+        info = load_model()
+        return info
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"Reload impossible: {exc}") from exc
 
 
 if __name__ == "__main__":

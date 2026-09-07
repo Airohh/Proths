@@ -11,7 +11,7 @@ Les services (Grafana, Prometheus, MLflow) sont vides car aucune donnée n'a ét
 Cela va créer des expériences et modèles dans MLflow :
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 python src/training/train.py --model-type random_forest
 ```
 
@@ -28,7 +28,7 @@ L'API expose les métriques que Prometheus collecte :
 **Dans un NOUVEAU terminal PowerShell** :
 
 ```powershell
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 uvicorn src.inference.api:app --reload --port 8000
 ```
 
@@ -132,11 +132,11 @@ Pour tout faire d'un coup :
 
 ```powershell
 # Terminal 1 - Entraîner modèle
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 python src/training/train.py --model-type random_forest
 
 # Terminal 2 - Lancer API
-cd "C:\Users\Utilisateur\Desktop\4 mois\Prometheus - LLM\mlops-pipeline"
+cd mlops-pipeline
 uvicorn src.inference.api:app --reload --port 8000
 
 # Terminal 3 - Générer du trafic

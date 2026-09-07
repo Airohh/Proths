@@ -1,75 +1,65 @@
 """
-Détection de drift des données
+Détection de drift des données.
+
+Score = max(
+  L1 des moyennes TF-IDF (shift de vocabulaire),
+  distance de variation totale des labels si les deux CSV sont étiquetés
+)
 """
 import numpy as np
-from scipy import stats
-from sklearn.metrics import pairwise_distances
+import pandas as pd
 
 
-def detect_drift(reference_data, current_data, threshold=0.1):
-    """
-    Détecte le drift entre les données de référence et les données actuelles
-    
-    Args:
-        reference_data: Données de référence (numpy array)
-        current_data: Données actuelles (numpy array)
-        threshold: Seuil de drift (0-1)
-    
-    Returns:
-        drift_score: Score de drift (0-1)
-        is_drift: Boolean indiquant si drift détecté
-    """
-    # Kolmogorov-Smirnov test pour chaque feature
-    drift_scores = []
-    
-    # Si les données sont trop grandes, échantillonner
-    if len(reference_data) > 10000:
-        reference_data = reference_data[np.random.choice(len(reference_data), 10000, replace=False)]
-    if len(current_data) > 10000:
-        current_data = current_data[np.random.choice(len(current_data), 10000, replace=False)]
-    
-    # Pour les données sparse (TF-IDF), calculer la distance moyenne
-    if hasattr(reference_data, 'toarray'):
-        reference_data = reference_data.toarray()
-        current_data = current_data.toarray()
-    
-    # Calculer la distance moyenne entre les distributions
-    if reference_data.shape[1] == current_data.shape[1]:
-        # Distance de MMD (Maximum Mean Discrepancy) simplifiée
-        ref_mean = np.mean(reference_data, axis=0)
-        curr_mean = np.mean(current_data, axis=0)
-        
-        drift_score = np.mean(np.abs(ref_mean - curr_mean))
-    else:
-        # Si dimensions différentes, utiliser distance entre moyennes
-        drift_score = 0.5  # Par défaut, drift modéré
-    
-    is_drift = drift_score > threshold
-    
-    return drift_score, is_drift
+def _densify(data):
+    if hasattr(data, "toarray"):
+        return data.toarray()
+    return np.asarray(data)
+
+
+def feature_mean_drift(reference_data, current_data) -> float:
+    reference_data = _densify(reference_data)
+    current_data = _densify(current_data)
+    if reference_data.ndim != 2 or current_data.ndim != 2:
+        return 0.0
+    if reference_data.shape[1] != current_data.shape[1]:
+        return 0.5
+    ref_mean = np.mean(reference_data, axis=0)
+    curr_mean = np.mean(current_data, axis=0)
+    return float(np.mean(np.abs(ref_mean - curr_mean)))
+
+
+def label_mix_drift(reference_labels, current_labels) -> float:
+    """Distance de variation totale entre deux répartitions de classes (0–1)."""
+    ref = pd.Series(reference_labels).value_counts(normalize=True)
+    curr = pd.Series(current_labels).value_counts(normalize=True)
+    classes = ref.index.union(curr.index)
+    p = ref.reindex(classes, fill_value=0.0)
+    q = curr.reindex(classes, fill_value=0.0)
+    return float(0.5 * np.abs(p - q).sum())
+
+
+def detect_drift(
+    reference_data,
+    current_data,
+    threshold=0.1,
+    reference_labels=None,
+    current_labels=None,
+):
+    feature_score = feature_mean_drift(reference_data, current_data)
+    label_score = 0.0
+    if reference_labels is not None and current_labels is not None:
+        label_score = label_mix_drift(reference_labels, current_labels)
+    drift_score = max(feature_score, label_score)
+    return drift_score, drift_score > threshold
 
 
 def calculate_data_quality_metrics(data):
-    """
-    Calcule des métriques de qualité des données
-    
-    Args:
-        data: Données (numpy array ou sparse matrix)
-    
-    Returns:
-        dict avec métriques de qualité
-    """
-    if hasattr(data, 'toarray'):
-        data = data.toarray()
-    
-    metrics = {
-        'mean': float(np.mean(data)),
-        'std': float(np.std(data)),
-        'min': float(np.min(data)),
-        'max': float(np.max(data)),
-        'null_count': int(np.isnan(data).sum()) if hasattr(data, 'sum') else 0,
-        'shape': data.shape
+    data = _densify(data)
+    return {
+        "mean": float(np.mean(data)),
+        "std": float(np.std(data)),
+        "min": float(np.min(data)),
+        "max": float(np.max(data)),
+        "null_count": int(np.isnan(data).sum()) if np.issubdtype(data.dtype, np.floating) else 0,
+        "shape": data.shape,
     }
-    
-    return metrics
-

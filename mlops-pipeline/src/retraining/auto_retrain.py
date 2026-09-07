@@ -18,7 +18,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from src.training.train import train_baseline_model
-from src.training.preprocessing import preprocess_data, load_preprocessing_artifacts
+from src.training.preprocessing import preprocess_data, vectorize_for_drift
 from src.monitoring.drift_detection import detect_drift
 from src.utils.logger import get_logger
 from config import get_config
@@ -96,25 +96,33 @@ class AutoRetrainer:
             drift_score, is_drift
         """
         logger.info("Vérification du drift...")
-        
-        # Charger les données de référence
-        ref_df = pd.read_csv(reference_data_path)
-        X_ref, _ = preprocess_data(ref_df)
-        
-        # Charger les données actuelles
-        if current_data is not None:
-            X_curr = current_data
-        elif current_data_path:
-            curr_df = pd.read_csv(current_data_path)
-            X_curr, _ = preprocess_data(curr_df)
-        else:
-            # Si pas de données actuelles, utiliser les données de référence (pas de drift)
+
+        if current_data is None and not current_data_path:
             logger.warning("Aucune donnée actuelle fournie, pas de drift détecté")
             return 0.0, False
-        
-        # Détecter le drift
-        threshold = self.retrain_config.get('trigger', {}).get('drift_threshold', 0.15)
-        drift_score, is_drift = detect_drift(X_ref, X_curr, threshold=threshold)
+
+        ref_df = pd.read_csv(reference_data_path)
+        curr_df = None
+        if current_data_path:
+            curr_df = pd.read_csv(current_data_path)
+
+        if current_data is not None:
+            X_ref, _ = vectorize_for_drift(ref_df, ref_df)
+            X_curr = current_data
+            curr_labels = None
+        else:
+            X_ref, X_curr = vectorize_for_drift(ref_df, curr_df)
+            curr_labels = curr_df["label"] if "label" in curr_df.columns else None
+
+        ref_labels = ref_df["label"] if "label" in ref_df.columns else None
+        threshold = self.retrain_config.get("trigger", {}).get("drift_threshold", 0.15)
+        drift_score, is_drift = detect_drift(
+            X_ref,
+            X_curr,
+            threshold=threshold,
+            reference_labels=ref_labels,
+            current_labels=curr_labels,
+        )
         
         logger.info(
             f"Drift détecté: {is_drift} (score: {drift_score:.4f}, seuil: {threshold})",
@@ -192,7 +200,8 @@ class AutoRetrainer:
         self,
         data_path: str,
         model_type: str = 'random_forest',
-        include_new_data: bool = True
+        include_new_data: bool = True,
+        extra_data_path: Optional[str] = None,
     ) -> Tuple[Any, Dict[str, float], str]:
         """
         Entraîne un nouveau modèle
@@ -210,10 +219,11 @@ class AutoRetrainer:
         # Charger les données
         df = pd.read_csv(data_path)
         
-        # TODO: Ajouter les données de production si include_new_data=True
-        # Pour l'instant, on utilise juste les données d'entraînement
-        
-        # Preprocessing
+        if include_new_data and extra_data_path and os.path.exists(extra_data_path):
+            extra = pd.read_csv(extra_data_path)
+            df = pd.concat([df, extra], ignore_index=True)
+            logger.info(f"Données courantes concaténées: {extra_data_path} ({len(extra)} lignes)")
+
         X, y = preprocess_data(df)
         
         # Split train/validation
@@ -336,11 +346,27 @@ class AutoRetrainer:
             logger.error(f"Erreur lors du déploiement: {e}", exc_info=True)
             return False
     
+    def notify_api_reload(self) -> bool:
+        """Demande à l'API de recharger Production. No-op si elle ne tourne pas."""
+        url = os.getenv("API_RELOAD_URL", "http://localhost:8000/model/reload")
+        try:
+            import requests
+
+            response = requests.post(url, timeout=5)
+            if response.status_code == 200:
+                logger.info(f"API rechargée: {url}")
+                return True
+            logger.warning(f"Reload API {response.status_code}: {response.text}")
+        except Exception as exc:
+            logger.info(f"API absente, reload ignoré ({exc})")
+        return False
+
     def retrain(
         self,
         trigger: RetrainTrigger = RetrainTrigger.MANUAL,
         data_path: Optional[str] = None,
-        model_type: str = 'random_forest'
+        model_type: str = "random_forest",
+        current_data_path: Optional[str] = None,
     ) -> RetrainResult:
         """
         Pipeline complet de retrain
@@ -369,15 +395,19 @@ class AutoRetrainer:
                 train_file = self.data_config.get('train_file', 'train.csv')
                 data_path = os.path.join(processed_path, train_file)
             
-            # 1. Vérifier le drift si nécessaire
             if trigger == RetrainTrigger.DRIFT:
-                reference_data_path = data_path
-                drift_score, is_drift = self.check_drift(reference_data_path)
-                
+                if not current_data_path:
+                    return RetrainResult(
+                        success=False,
+                        reason="Drift: fournir --current-data (ex. data/processed/drift.csv)",
+                    )
+                drift_score, is_drift = self.check_drift(
+                    data_path, current_data_path=current_data_path
+                )
                 if not is_drift:
                     return RetrainResult(
                         success=False,
-                        reason=f"Pas de drift détecté (score: {drift_score:.4f})"
+                        reason=f"Pas de drift détecté (score: {drift_score:.4f})",
                     )
             
             # 2. Récupérer le modèle actuel en production
@@ -394,7 +424,8 @@ class AutoRetrainer:
             # 3. Entraîner un nouveau modèle
             new_model, new_metrics, run_id = self.train_new_model(
                 data_path,
-                model_type=model_type
+                model_type=model_type,
+                extra_data_path=current_data_path,
             )
             
             # 4. Comparer les modèles
@@ -422,6 +453,7 @@ class AutoRetrainer:
                     
                     if deployed:
                         logger.info("[OK] Nouveau modele deploye en production")
+                        self.notify_api_reload()
                     else:
                         logger.error("[ERROR] Echec du deploiement du nouveau modele")
                 else:
