@@ -1,26 +1,22 @@
 # Architecture
 
-Lab local. Boucle visée : **Train → Registry → Serve → Observe → Retrain**.
+Tout tourne en local.
 
 ```
-AG News ──► TF-IDF ──► Random Forest ──► MLflow (run + registry)
-                                              │
-                                              ▼
-                                         FastAPI /predict
-                                              │
-                                         /metrics ──► Prometheus ──► Grafana
-                                              │
-                         drift vs journal /predict (predictions.csv)
-                                              │
-                         promote Production si ΔF1 ≥ 0.01 ──► POST /model/reload
+AG News → TF-IDF → Random Forest → MLflow
+                FastAPI /predict
+                predictions.csv
+                drift vs train
+                promote si le F1 monte → POST /model/reload
+                Prometheus → Grafana
 ```
 
-| Brique | Rôle réel |
-|--------|-----------|
-| `src/training/` | Fit TF-IDF + modèle, log MLflow |
-| `src/inference/` | `Production` → `latest` → pickle local. `POST /model/reload` |
-| `src/monitoring/` | max(moyennes TF-IDF, mix de labels). Pas un KS / PSI |
-| `src/retraining/` | Compare F1, promote, ping reload. Pas d’A/B, pas de rollback auto |
-| Compose | API + MLflow + Prometheus + Grafana |
+| Dossier | Rôle |
+|---------|------|
+| `src/training/` | Fit, log MLflow |
+| `src/inference/` | Charge Production, sinon latest, sinon le pickle. `POST /model/reload` |
+| `src/monitoring/` | Drift : moyennes TF-IDF + mix de labels |
+| `src/retraining/` | Compare le F1, promote, ping reload |
+| Compose | API, MLflow, Prometheus, Grafana |
 
-Hors périmètre (volontairement absent) : DVC, TimescaleDB, Kubernetes, feature store, auth.
+Pas de DVC, pas de Timescale, pas de K8s, pas d’auth.
