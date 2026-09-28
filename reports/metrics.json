@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "run_id": "0092bc0410804d5a836f9271703edf70",
+  "model_type": "logreg",
+  "n_train": 120000,
+  "candidate": {
+    "accuracy": 0.9231578947368421,
+    "f1_macro": 0.9229977585704514,
+    "f1_business": 0.8959323824617009,
+    "f1_sci_tech": 0.9050104384133613,
+    "f1_sports": 0.9688796680497925,
+    "f1_world": 0.922168545356951
+  },
+  "champion_version": null,
+  "champion": null,
+  "promoted": true,
+  "reason": "premier mod\u00e8le : pas de champion"
+}

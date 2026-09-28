@@ -1,0 +1,34 @@
+[
+  {
+    "model": "logreg",
+    "n_train": 120000,
+    "accuracy": 0.9232,
+    "f1_macro": 0.923,
+    "fit_seconds": 23.4,
+    "ms_per_doc": 0.087
+  },
+  {
+    "model": "linear_svc",
+    "n_train": 120000,
+    "accuracy": 0.9229,
+    "f1_macro": 0.9227,
+    "fit_seconds": 27.7,
+    "ms_per_doc": 0.094
+  },
+  {
+    "model": "naive_bayes",
+    "n_train": 120000,
+    "accuracy": 0.9121,
+    "f1_macro": 0.9117,
+    "fit_seconds": 16.7,
+    "ms_per_doc": 0.086
+  },
+  {
+    "model": "random_forest",
+    "n_train": 120000,
+    "accuracy": 0.8042,
+    "f1_macro": 0.8022,
+    "fit_seconds": 18.2,
+    "ms_per_doc": 0.1
+  }
+]

@@ -5,11 +5,18 @@ on:
     branches: [master, main]
   pull_request:
 
-defaults:
-  run:
-    working-directory: mlops-pipeline
-
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff==0.6.9
+      - run: ruff check .
+      - run: ruff format --check .
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -17,13 +24,39 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Tests
-        run: pytest tests/ -q
-      - name: Syntax
-        run: |
-          pip install flake8
-          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Tests (unitaires + boucle train -> predict -> feedback -> drift -> retrain)
+        run: pytest --cov --cov-report=term-missing --cov-fail-under=80
+
+  # Entraîne sur de vraies données AG News et échoue si le F1 holdout passe sous le seuil.
+  quality-gate:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements.txt
+      - uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: ag-news-v1
+      - run: python scripts/prepare_ag_news.py --train-size 30000
+      - run: python -m src.training.train --min-f1 0.85
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: metrics
+          path: reports/metrics.json
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker compose build mlflow api

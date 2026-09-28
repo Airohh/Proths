@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# MLflow (local)
+mlruns/
+mlflow.db
+
+# Données (téléchargées / générées)
+data/raw/*
+data/processed/*
+data/predictions.db*
+data/demo/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+models/
+
+# Rapports temporaires
+reports/_*
+
+# Environnement
+.env
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
