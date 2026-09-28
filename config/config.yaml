@@ -1,0 +1,39 @@
+# Configuration centrale. Les valeurs ${VAR:-défaut} sont lues dans l'environnement.
+
+data:
+  processed_path: "${DATA_DIR:-data/processed}"
+  train_file: "train.csv"        # AG News train (échantillon configurable)
+  holdout_file: "holdout.csv"    # moitié du split test : juge fixe champion/challenger
+  stream_file: "stream.csv"      # autre moitié : trafic de "production" simulé
+  seed: 42
+
+model:
+  name: "news-classifier"
+  type: "logreg"                 # logreg | linear_svc | naive_bayes | random_forest
+  min_holdout_f1: 0.85           # gate qualité CI (F1 macro sur le holdout)
+
+mlflow:
+  tracking_uri: "${MLFLOW_TRACKING_URI:-sqlite:///mlruns/mlflow.db}"
+  experiment_name: "news-classification"
+
+store:
+  predictions_db: "${PREDICTIONS_DB:-data/predictions.db}"
+
+monitoring:
+  window: 500                    # nb de prédictions récentes comparées à la référence
+  min_samples: 200               # en dessous, pas de verdict de drift
+  psi_threshold: 0.2             # PSI > 0.2 sur le mix de classes prédites = drift
+  ks_threshold: 0.15             # KS sur la confiance > 0.15 = drift
+  accuracy_drop: 0.05            # précision live < F1 holdout du champion - 0.05 = alerte
+  min_labeled: 100               # labels de feedback nécessaires pour juger la précision live
+  interval_seconds: "${MONITOR_INTERVAL:-60}"
+  metrics_port: 8001
+
+retrain:
+  min_improvement: 0.002         # gain de F1 macro exigé sur le holdout pour promouvoir
+  min_new_labels: 200            # labels de feedback nouveaux avant un retrain
+  cooldown_seconds: "${RETRAIN_COOLDOWN:-600}"
+
+api:
+  reload_url: "${API_RELOAD_URL:-http://localhost:8000/model/reload}"
+  poll_seconds: "${MODEL_POLL_SECONDS:-30}"   # l'API vérifie l'alias champion ; 0 = désactivé

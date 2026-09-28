@@ -1,0 +1,53 @@
+groups:
+  - name: model
+    rules:
+      - alert: DataDrift
+        expr: drift_detected == 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Drift sur le trafic de production"
+          description: "Le mix de classes prédites ou la confiance s'écarte de la référence du champion."
+
+      - alert: LiveAccuracyDrop
+        expr: live_accuracy < (champion_holdout_f1 - 0.05) and live_labeled >= 100
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Précision live {{ $value | humanizePercentage }}, sous la référence holdout"
+          description: "Calculée sur les labels renvoyés par /feedback."
+
+      - alert: CandidateRejected
+        expr: increase(retrain_total{decision="rejected"}[30m]) > 0
+        labels:
+          severity: info
+        annotations:
+          summary: "Un retrain n'a pas battu le champion ({{ $labels.trigger }})"
+
+  - name: service
+    rules:
+      - alert: ModelNotLoaded
+        expr: model_loaded == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "L'API n'a pas de modèle chargé"
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, sum by (le) (rate(api_request_latency_seconds_bucket{endpoint="/predict"}[5m]))) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 /predict à {{ $value }}s"
+
+      - alert: PredictionErrors
+        expr: sum(rate(prediction_errors_total[5m])) / sum(rate(api_requests_total{endpoint=~"/predict.*"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Plus de 5 % des prédictions en erreur"
